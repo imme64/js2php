@@ -66,6 +66,54 @@ function eq($a, $b) {
 }
 
 /**
+ * Implements < operator.
+ * @param $a
+ * @param $b
+ * @return bool
+ */
+function lt($a, $b) {
+    $typeA = ($a === null || $a === ObjectClass::$null ? 'null' : ($a instanceof ObjectClass ? 'object' : gettype($a)));
+    $typeB = ($b === null || $b === ObjectClass::$null ? 'null' : ($b instanceof ObjectClass ? 'object' : gettype($b)));
+    return $a < $b;
+}
+
+/**
+ * Implements <= operator.
+ * @param $a
+ * @param $b
+ * @return bool
+ */
+function lte($a, $b) {
+    $typeA = ($a === null || $a === ObjectClass::$null ? 'null' : ($a instanceof ObjectClass ? 'object' : gettype($a)));
+    $typeB = ($b === null || $b === ObjectClass::$null ? 'null' : ($b instanceof ObjectClass ? 'object' : gettype($b)));
+    return $a <= $b;
+}
+
+/**
+ * Implements > operator.
+ * @param $a
+ * @param $b
+ * @return bool
+ */
+function gt($a, $b) {
+    $typeA = ($a === null || $a === ObjectClass::$null ? 'null' : ($a instanceof ObjectClass ? 'object' : gettype($a)));
+    $typeB = ($b === null || $b === ObjectClass::$null ? 'null' : ($b instanceof ObjectClass ? 'object' : gettype($b)));
+    return $a > $b;
+}
+
+/**
+ * Implements >= operator.
+ * @param $a
+ * @param $b
+ * @return bool
+ */
+function gte($a, $b) {
+    $typeA = ($a === null || $a === ObjectClass::$null ? 'null' : ($a instanceof ObjectClass ? 'object' : gettype($a)));
+    $typeB = ($b === null || $b === ObjectClass::$null ? 'null' : ($b instanceof ObjectClass ? 'object' : gettype($b)));
+    return $a >= $b;
+}
+
+/**
  * Used in `for..in` to get keys (including up the proto chain)
  * @param ObjectClass $obj
  * @param array $arr

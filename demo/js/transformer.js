@@ -7370,6 +7370,42 @@ parseStatement: true, parseSourceElement: true */
                     ')'
                   );
                 }
+                if (op === '<') {
+                  return (
+                      'lt(' +
+                      this.generate(node.left) +
+                      ', ' +
+                      this.generate(node.right) +
+                      ')'
+                  );
+                }
+                if (op === '<=') {
+                  return (
+                      'lte(' +
+                      this.generate(node.left) +
+                      ', ' +
+                      this.generate(node.right) +
+                      ')'
+                  );
+                }
+                if (op === '>') {
+                  return (
+                      'gt(' +
+                      this.generate(node.left) +
+                      ', ' +
+                      this.generate(node.right) +
+                      ')'
+                  );
+                }
+                if (op === '>=') {
+                  return (
+                      'gte(' +
+                      this.generate(node.left) +
+                      ', ' +
+                      this.generate(node.right) +
+                      ')'
+                  );
+                }
                 // some ops will return int in which case we need to cast result
                 if (op === '%') {
                   var castFloat = true;
