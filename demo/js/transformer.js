@@ -7381,6 +7381,15 @@ parseStatement: true, parseSourceElement: true */
                     ')'
                   );
                 }
+                if (op === '>>>') {
+                  return (
+                    'zero_fill_right_shift(' +
+                    this.generate(node.left) +
+                    ', ' +
+                    this.generate(node.right) +
+                    ')'
+                  );
+                }
                 // some ops will return int in which case we need to cast result
                 if (op === '%') {
                   var castFloat = true;

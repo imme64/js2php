@@ -443,3 +443,8 @@ if (cmp($a, '>=', $b)) {
   call($c);
 }
 
+----
+a = 5 >>> 2;
+====
+$a = zero_fill_right_shift(5.0, 2.0);
+
