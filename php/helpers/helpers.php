@@ -66,51 +66,38 @@ function eq($a, $b) {
 }
 
 /**
- * Implements < operator.
- * @param $a
- * @param $b
+ * Implements non-strict comparison operators.
+ * @param mixed $a
+ * @param string $operator <, >, <= or =>
+ * @param mixed $b
  * @return bool
  */
-function lt($a, $b) {
+function cmp($a, $operator, $b) {
     $typeA = ($a === null || $a === ObjectClass::$null ? 'null' : ($a instanceof ObjectClass ? 'object' : gettype($a)));
     $typeB = ($b === null || $b === ObjectClass::$null ? 'null' : ($b instanceof ObjectClass ? 'object' : gettype($b)));
-    return $a < $b;
-}
-
-/**
- * Implements <= operator.
- * @param $a
- * @param $b
- * @return bool
- */
-function lte($a, $b) {
-    $typeA = ($a === null || $a === ObjectClass::$null ? 'null' : ($a instanceof ObjectClass ? 'object' : gettype($a)));
-    $typeB = ($b === null || $b === ObjectClass::$null ? 'null' : ($b instanceof ObjectClass ? 'object' : gettype($b)));
-    return $a <= $b;
-}
-
-/**
- * Implements > operator.
- * @param $a
- * @param $b
- * @return bool
- */
-function gt($a, $b) {
-    $typeA = ($a === null || $a === ObjectClass::$null ? 'null' : ($a instanceof ObjectClass ? 'object' : gettype($a)));
-    $typeB = ($b === null || $b === ObjectClass::$null ? 'null' : ($b instanceof ObjectClass ? 'object' : gettype($b)));
-    return $a > $b;
-}
-
-/**
- * Implements >= operator.
- * @param $a
- * @param $b
- * @return bool
- */
-function gte($a, $b) {
-    $typeA = ($a === null || $a === ObjectClass::$null ? 'null' : ($a instanceof ObjectClass ? 'object' : gettype($a)));
-    $typeB = ($b === null || $b === ObjectClass::$null ? 'null' : ($b instanceof ObjectClass ? 'object' : gettype($b)));
-    return $a >= $b;
+    if (in_array($typeA, ['integer', 'double']) && in_array($typeB, ['integer', 'double'])) {
+        // Most common case, nothing to do. Due to performance reasons we put this case first
+        // to skip all other checks.
+    } else
+        if ($typeA === 'string' && $typeB === 'string') {
+        // two strings are compared lexically in JavaScript, even if both could be converted to numbers
+        $a = strcmp($a, $b);
+        $b = 0;
+    } else if ($typeA === 'string' && in_array($typeB, ['integer', 'double'])) {
+        $a = to_number($a);
+    } else if ($typeB === 'string' && in_array($typeA, ['integer', 'double'])) {
+        $b = to_number($b);
+    }
+    switch ($operator) {
+        case '<':
+            return $a < $b;
+        case '>':
+            return $a > $b;
+        case '<=':
+            return $a <= $b;
+        case '>=':
+            return $a >= $b;
+    }
 }
 
 /**
@@ -165,6 +152,31 @@ function to_string($value) {
   throw new Ex(Err::create('Cannot cast PHP value to string: ' . _stringify($value)));
 }
 
+function is_nan_js($value) {
+    if ($value === null) {
+        return true;
+    }
+    if ($value === ObjectClass::$null || $value === 'Infinity' || $value === '+Infinity' || $value === '-Infinity'
+        || is_float($value) || is_numeric($value) || is_bool($value) || $value instanceof ObjectClass) {
+        return false;
+    }
+    //trim whitespace
+    $value = preg_replace('/^[\s\x0B\xA0]+|[\s\x0B\xA0]+$/u', '', $value);
+    if ($value === '') {
+        return false;
+    }
+    if (preg_match('/^([+-]?)(\d+\.\d*|\.\d+|\d+)$/i', $value)) {
+        return false;
+    }
+    if (preg_match('/^([+-]?)(\d+\.\d*|\.\d+|\d+)e([+-]?[0-9]+)$/i', $value, $m)) {
+        return false;
+    }
+    if (preg_match('/^0x[a-z0-9]+$/i', $value)) {
+        return false;
+    }
+    return true;
+}
+
 function to_number($value) {
   if ($value === null) {
     return NAN;
@@ -175,7 +187,7 @@ function to_number($value) {
   if (is_float($value)) {
     return $value;
   }
-  if (is_int($value)) {
+  if (is_numeric($value)) {
     return (float)$value;
   }
   if (is_bool($value)) {

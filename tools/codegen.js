@@ -644,38 +644,11 @@
           ')'
         );
       }
-      if (op === '<') {
+      if (['<', '>', '<=', '>='].indexOf(op) > -1) {
         return (
-            'lt(' +
+            'cmp(' +
             this.generate(node.left) +
-            ', ' +
-            this.generate(node.right) +
-            ')'
-        );
-      }
-      if (op === '<=') {
-        return (
-            'lte(' +
-            this.generate(node.left) +
-            ', ' +
-            this.generate(node.right) +
-            ')'
-        );
-      }
-      if (op === '>') {
-        return (
-            'gt(' +
-            this.generate(node.left) +
-            ', ' +
-            this.generate(node.right) +
-            ')'
-        );
-      }
-      if (op === '>=') {
-        return (
-            'gte(' +
-            this.generate(node.left) +
-            ', ' +
+            ', \'' + op + '\', ' +
             this.generate(node.right) +
             ')'
         );
