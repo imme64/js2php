@@ -67,12 +67,12 @@ true ? "true" : call($f);
 ----
 ~1;
 ====
-~1.0;
+(float)~1.0;
 
 ----
 ~a;
 ====
-~to_number($a);
+(float)~to_number($a);
 
 ----
 typeof a;
@@ -448,3 +448,46 @@ a = 5 >>> 2;
 ====
 $a = zero_fill_right_shift(5.0, 2.0);
 
+----
+(function () {
+  var a = __dirname;
+})();
+====
+call(new Func(function() {
+  $a = __DIR__;
+}));
+
+----
+var util = require('util');
+====
+$util = call($require, "util", __DIR__);
+
+----
+var a = '\xA0';
+====
+$a = "\xC2\xA0";
+
+----
+var a = '"';
+====
+$a = "\"";
+
+----
+var a = '\b';
+====
+$a = "\x08";
+
+----
+var a = '\'';
+====
+$a = "'";
+
+----
+var a = "\b";
+====
+$a = "\x08";
+
+----
+var a = 8.64e15;
+====
+$a = 8.64e15;

@@ -38,9 +38,15 @@ class ObjectClass {
   }
 
   function get($key) {
+    if ($key instanceof Arr) {
+      return null;
+    }
     $key = (string)$key;
     if (method_exists($this, 'get_' . $key)) {
       return $this->{'get_' . $key}();
+    }
+    if (isset($this->{'get_' . $key}) && $this->{'get_' . $key} instanceof Func) {
+      return $this->{'get_' . $key}->call();
     }
     $obj = $this;
     while ($obj !== ObjectClass::$null) {
@@ -367,11 +373,14 @@ ObjectClass::$classMethods = array(
           $result = new Descriptor($writable, $enumerable, $configurable);
           $obj->dscr[$key] = $result;
         }
-        $value = $desc->get('value');
         $updateValue = true;
       }
       if ($updateValue) {
-        if (method_exists($obj, 'set_' . $key)) {
+        $getter = $desc->get('get');
+        $value = $desc->get('value');
+        if ($getter) {
+          $obj->{'get_' . $key} = $getter;
+        } else if (method_exists($obj, 'set_' . $key)) {
           $obj->{'set_' . $key}($value);
         } else {
           $obj->data[$key] = $value;

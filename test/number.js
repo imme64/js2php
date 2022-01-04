@@ -41,6 +41,7 @@ testSuite('numbers', function (assert) {
     assert('0123 === 83', 0123 === 83);
     assert('0o123 === 83', 0o123 === 83);
     assert('0b111 === 7', 0b111 === 7);
+    assert('8.64e15 === parseFloat(\'8.64e15\')', 8.64e15 === parseFloat('8.64e15'))
   });
 
   testSuite('string to number comparison', function () {

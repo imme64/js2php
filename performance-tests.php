@@ -3,7 +3,7 @@
 require_once('runtime.php');
 require_once('./test/compiled/helpers.php');
 error_reporting(E_ALL & ~E_NOTICE);
-$tests = ['core', 'number', 'boolean', 'string', 'date', 'regex', 'array', 'buffer', 'json'];
+$tests = ['core', 'number', 'boolean', 'string', 'date', 'regex', 'array', 'buffer', 'json', 'module'];
 $processDuration = 0;
 foreach ($tests as $test) {
     $path = "./test/compiled/$test.php";

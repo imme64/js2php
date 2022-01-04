@@ -381,6 +381,8 @@ Test::suite(
     Test::assert('parseFloat 2', $num === 5.0);
     $num = $Number->callMethod('parseFloat', 'x');
     Test::assert('parseFloat 3', is_nan($num));
+    $num = $Number->callMethod('parseFloat', '8.64e15');
+    Test::assert('parseFloat 4', $num === 8.64e15);
   }
 );
 
@@ -407,6 +409,7 @@ require_once('test/compiled/regex.php');
 require_once('test/compiled/array.php');
 require_once('test/compiled/buffer.php');
 require_once('test/compiled/json.php');
-require_once('test/compiled/module-fs.php');
+//require_once('test/compiled/module-fs.php');
+require_once('test/compiled/module-path.php');
 
 $console->callMethod('log', 'Success');

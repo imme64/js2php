@@ -85,7 +85,9 @@ class RegExp extends ObjectClass {
     if ($this->multilineFlag) {
       $flags .= 'm';
     }
-    return '/' . str_replace('/', '\\/', $source) . '/' . $flags;
+    // convert unicode code points from \uXXXX to \x{XXXX)
+    return '/' . str_replace('/', '\\/',
+            preg_replace("/\\\\u([0-9A-Za-z]{4})/", '\\x{$1}', $source)) . '/' . $flags;
   }
 
   /**
@@ -143,7 +145,7 @@ RegExp::$protoMethods = array(
   'test' => function($str) {
       $self = Func::getContext();
       $result = preg_match($self->toString(true), to_string($str));
-      return ($result !== false);
+      return ($result === 1);
     },
   'toString' => function() {
       $self = Func::getContext();

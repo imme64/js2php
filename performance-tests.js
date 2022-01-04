@@ -10,6 +10,7 @@ var tests = [
   'array',
   'buffer',
   'json',
+  'module-path'
 ]; //, 'module-fs'];
 require('./test/helpers');
 for (var i in tests) {
@@ -18,7 +19,8 @@ for (var i in tests) {
   var startTimeInMs = Date.now();
   var numOfLoops = 1;
   for (var j = 0; j < numOfLoops; j++) {
-    delete require.cache[require.resolve(path)];
+    var resolved = require.resolve(path);
+    delete require.cache[resolved];
     require(path);
   }
   var endTimeInMs = Date.now();

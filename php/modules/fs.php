@@ -269,7 +269,7 @@ Module::define('fs', function() {
         $fullPath = $helpers['mapPath']($path);
         return $helpers['getInfo']($fullPath, $deep);
       },
-    'readFile' => function($path, $enc = null) use (&$helpers) {
+    'readFileSync' => function($path, $enc = null) use (&$helpers) {
         $fullPath = $helpers['mapPath']($path);
         //file_get_contents returns an empty string for a directory
         if (is_dir($fullPath)) {
@@ -290,11 +290,11 @@ Module::define('fs', function() {
           return $data;
         }
       },
-    'writeFile' => function($path, $data, $opts = null) use (&$helpers) {
+    'writeFileSync' => function($path, $data, $opts = null) use (&$helpers) {
         $fullPath = $helpers['mapPath']($path);
         $opts = ($opts instanceof ObjectClass) ? $opts : new ObjectClass();
         //default is to append
-        $append = $opts->get('append') !== false;
+        $append = $opts->get('append') === false;
         //overwrite option will override append
         if ($opts->get('overwrite') === true) {
           $append = false;
@@ -369,13 +369,7 @@ Module::define('fs', function() {
       },
     'mapPath' => function($path) use (&$helpers) {
         $path = str_replace('\\', '/', $path);
-        $parts = explode('/', $path);
-        $normalized = array();
-        foreach ($parts as $part) {
-          if ($part === '' || $part === '.' || $part === '..') continue;
-          $normalized[] = $part;
-        }
-        return $helpers['basePath'] . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $normalized);
+        return realpath($path);
       },
     'reverseMapPath' => function($path) use (&$helpers) {
         $basePath = $helpers['basePath'];

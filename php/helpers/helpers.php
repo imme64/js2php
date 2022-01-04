@@ -152,6 +152,10 @@ function to_string($value) {
     if ($value !== $value) return 'NaN';
     if ($value === INF) return 'Infinity';
     if ($value === -INF) return '-Infinity';
+    if ($type === 'double' && fmod($value, 1.0) === 0.0) {
+      // avoid "1.0E+15" notation
+      return sprintf("%u", $value);
+    }
     return $value . '';
   }
   if ($value instanceof ObjectClass) {
@@ -275,7 +279,7 @@ function set($obj, $name, $value, $op = '=', $returnOld = false) {
     return $obj->set($name, $value);
   }
   $oldValue = $obj->get($name);
-  //todo: bitwise operators: << >> >>> & ^ |
+  //todo: bitwise operators: << >> >>> ^
   switch ($op) {
     case '+=':
       $newValue = _plus($oldValue, $value);
@@ -292,6 +296,14 @@ function set($obj, $name, $value, $op = '=', $returnOld = false) {
     case '%=':
       $newValue = $oldValue % $value;
       break;
+    case '&=':
+      $newValue = $oldValue && $value;
+      break;
+    case '|=':
+      $newValue = $oldValue || $value;
+      break;
+    default:
+      throw new Ex(Err::create("operator '$op' is not implemented"));
   }
   $obj->set($name, $newValue);
   return $returnOld ? $oldValue : $newValue;
@@ -323,6 +335,9 @@ function call_method($obj, $name) {
   }
   $obj = objectify($obj);
   $fn = $obj->get($name);
+  if (!$fn) {
+    throw new Ex(Err::create($name . " is not a function"));
+  }
   if (!($fn instanceof Func)) {
     throw new Ex(Err::create(_typeof($fn) . " is not a function"));
   }

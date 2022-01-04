@@ -24,10 +24,14 @@ require_once('php/globals/Math.php');
 require_once('php/globals/JSON.php');
 require_once('php/globals/console.php');
 require_once('php/globals/process.php');
+require_once('php/globals/require.php');
 
 require_once('php/helpers/Module.php');
 require_once('php/modules/http.php');
 require_once('php/modules/fs.php');
+require_once('php/modules/util.php');
+require_once('php/modules/child_process.php');
 
 require_once('php/helpers/Test.php');
 require_once('php/helpers/Debug.php');
+require_once('vendor/autoload.php');
