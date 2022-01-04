@@ -67,8 +67,8 @@ $require = new Func(function ($name, $caller_dir = null) {
 
 $require->setMethods(array(
     'invokeNativeRequire' => function ($path) {
-      $module = new ObjectClass();
-      $exports = new ObjectClass();
+      $module = new Obj();
+      $exports = new Obj();
       $module->set('exports', $exports);
       // globals must be available in the included code
       foreach ($GLOBALS as $key => $val) {
@@ -83,4 +83,4 @@ if (is_dir('node_modules')) {
   $require->set('node_modules_path', realpath('node_modules'));
 }
 
-$require->set('cache', new ObjectClass());
+$require->set('cache', new Obj());

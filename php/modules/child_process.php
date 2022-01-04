@@ -6,9 +6,9 @@ Module::define('child_process', function() {
       // TODO: Handle arguments correctly that need to be enclosed in " or '
       $process = new React\ChildProcess\Process($command . ' ' . implode(' ', $argArray->toArray()));
       $process->start();
-      $jsProcess = new ObjectClass();
+      $jsProcess = new Obj();
       foreach (['stdin', 'stdout', 'stderr'] as $streamName) {
-        $jsStream = new ObjectClass();
+        $jsStream = new Obj();
         (function ($stream) use (&$jsStream) {
           $jsStream->set('on', new Func(function($event, $listener) use (&$stream) {
             $stream->on($event, $listener->fn);
@@ -25,7 +25,7 @@ Module::define('child_process', function() {
       return $jsProcess;
     }
   );
-  $child_process = new ObjectClass();
+  $child_process = new Obj();
   $child_process->setMethods($methods, true, false, true);
   return $child_process;
 });

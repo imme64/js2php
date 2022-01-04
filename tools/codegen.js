@@ -451,7 +451,7 @@
         items.push(encodeString(keyName));
         items.push(this.generate(node.value));
       }, this);
-      return 'new ObjectClass(' + items.join(', ') + ')';
+      return 'new Obj(' + items.join(', ') + ')';
     },
 
     CallExpression: function (node) {
@@ -973,7 +973,7 @@
       return 'null';
     }
     if (type === 'null') {
-      return 'ObjectClass::$null';
+      return 'Obj::$null';
     }
     if (type === 'string') {
       /*

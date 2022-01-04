@@ -1,5 +1,5 @@
 <?php
-class Str extends ObjectClass {
+class Str extends Obj {
   public $className = "String";
   public $value = null;
 
@@ -219,7 +219,7 @@ Str::$protoMethods = array(
         $index = $foundAt + strlen($foundStr);
         $results->push($foundStr);
       }
-      return $index > 0 ? $results : ObjectClass::$null;
+      return $index > 0 ? $results : Obj::$null;
     },
   'replace' => function($search, $replace) {
       $self = Func::getContext();
@@ -335,5 +335,5 @@ Str::$protoMethods = array(
     }
 );
 
-Str::$protoObject = new ObjectClass();
+Str::$protoObject = new Obj();
 Str::$protoObject->setMethods(Str::$protoMethods, true, false, true);

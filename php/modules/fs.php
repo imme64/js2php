@@ -7,7 +7,7 @@ Module::define('fs', function() {
     $self = Func::getContext();
     $fullPath = $helpers['mapPath']($path);
     $self->set('path', $fullPath);
-    $opts = ($opts instanceof ObjectClass) ? $opts : new ObjectClass();
+    $opts = ($opts instanceof Obj) ? $opts : new Obj();
     $self->set('opts', $opts);
     if (!$opts->hasOwnProperty('chunkSize')) {
       $opts->set('chunkSize', $CHUNK_SIZE);
@@ -24,7 +24,7 @@ Module::define('fs', function() {
     $self->stream = $stream;
   });
 
-  /* @var ObjectClass $prototype */
+  /* @var Obj $prototype */
   $prototype = $ReadStream->get('prototype');
   Module::eventify($prototype);
   $prototype->setMethods(array(
@@ -81,7 +81,7 @@ Module::define('fs', function() {
     $self = Func::getContext();
     $fullPath = $helpers['mapPath']($path);
     $self->set('path', $fullPath);
-    $opts = ($opts instanceof ObjectClass) ? $opts : new ObjectClass();
+    $opts = ($opts instanceof Obj) ? $opts : new Obj();
     $self->set('opts', $opts);
     //default is to append
     $append = $opts->get('append') !== false;
@@ -201,7 +201,7 @@ Module::define('fs', function() {
       },
     'createDir' => function($path, $opts = null) use (&$helpers) {
         $fullPath = $helpers['mapPath']($path);
-        $opts = ($opts instanceof ObjectClass) ? $opts : new ObjectClass();
+        $opts = ($opts instanceof Obj) ? $opts : new Obj();
         $mode = $helpers['normalizeMode']($opts->get('mode'), 0777);
         $deep = ($opts->get('deep') === true);
         try {
@@ -292,7 +292,7 @@ Module::define('fs', function() {
       },
     'writeFileSync' => function($path, $data, $opts = null) use (&$helpers) {
         $fullPath = $helpers['mapPath']($path);
-        $opts = ($opts instanceof ObjectClass) ? $opts : new ObjectClass();
+        $opts = ($opts instanceof Obj) ? $opts : new Obj();
         //default is to append
         $append = $opts->get('append') === false;
         //overwrite option will override append
@@ -408,7 +408,7 @@ Module::define('fs', function() {
           $helpers['throwError']('EIO', $fullPath);
         }
         $isDir = is_dir($fullPath);
-        $result = new ObjectClass();
+        $result = new Obj();
         $result->set('name', basename($fullPath));
         $result->set('dateCreated', new Date($stat['ctime'] * 1000));
         $result->set('dateLastAccessed', new Date($stat['atime'] * 1000));
@@ -484,7 +484,7 @@ Module::define('fs', function() {
       }
   );
 
-  $fs = new ObjectClass();
+  $fs = new Obj();
   $fs->setMethods($methods, true, false, true);
   return $fs;
 });
