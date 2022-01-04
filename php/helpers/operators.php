@@ -100,7 +100,9 @@ function _delete($obj, $key = null) {
   if ($obj === null || $obj === ObjectClass::$null) {
     throw new Ex(Err::create("Cannot convert undefined or null to object"));
   }
-  $obj = objectify($obj);
+  if (!($obj instanceof ObjectClass)) {
+    $obj = objectify($obj);
+  }
   $obj->remove($key);
   return true;
 }

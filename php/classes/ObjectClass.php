@@ -247,7 +247,9 @@ class ObjectClass {
    */
   static function getGlobalConstructor() {
     $Object = new Func(function($value = null) {
-      if ($value === null || $value === ObjectClass::$null) {
+      if ($value instanceof ObjectClass) {
+        return $value;
+      } else if ($value === null || $value === ObjectClass::$null) {
         return new ObjectClass();
       } else {
         return objectify($value);
@@ -444,7 +446,11 @@ ObjectClass::$protoMethods = array(
       } else if ($self === ObjectClass::$null) {
         $className = 'Null';
       } else {
-        $obj = objectify($self);
+        if ($self instanceof ObjectClass) {
+          $obj = $self;
+        } else {
+          $obj = objectify($self);
+        }
         $className = $obj->className;
       }
       return '[object ' . $className . ']';

@@ -252,6 +252,9 @@ function objectify($value) {
  * @throws Exception
  */
 function get($obj, $name) {
+  if ($obj instanceof ObjectClass) {
+    return $obj->get($name);
+  }
   if ($obj === null || $obj === ObjectClass::$null) {
     throw new Ex(Err::create("Cannot read property '" . $name . "' of " . to_string($obj)));
   }
@@ -274,7 +277,9 @@ function set($obj, $name, $value, $op = '=', $returnOld = false) {
   if ($obj === null || $obj === ObjectClass::$null) {
     throw new Ex(Err::create("Cannot set property '" . $name . "' of " . to_string($obj)));
   }
-  $obj = objectify($obj);
+  if (!($obj instanceof ObjectClass)) {
+    $obj = objectify($obj);
+  }
   if ($op === '=') {
     return $obj->set($name, $value);
   }
@@ -333,7 +338,9 @@ function call_method($obj, $name) {
   if ($obj === null || $obj === ObjectClass::$null) {
     throw new Ex(Err::create("Cannot read property '" . $name . "' of " . to_string($obj)));
   }
-  $obj = objectify($obj);
+  if (!($obj instanceof ObjectClass)) {
+    $obj = objectify($obj);
+  }
   $fn = $obj->get($name);
   if (!$fn) {
     throw new Ex(Err::create($name . " is not a function"));
