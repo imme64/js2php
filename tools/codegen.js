@@ -379,6 +379,11 @@
       );
       results.push(this.Body(catchClause.body));
       results.push(this.indent() + '}');
+      if (node.finalizer) {
+        results.push(' finally {\n');
+        results.push(this.Body(node.finalizer));
+        results.push(this.indent() + '}');
+      }
       return results.join('') + '\n';
     },
 
@@ -481,9 +486,18 @@
     },
 
     MemberExpression: function (node) {
-      return (
-        'get(' + this.generate(node.object) + ', ' + this.encodeProp(node) + ')'
-      );
+      var result = this.generate(node.object);
+      if (result.startsWith('new ')) {
+        result = '(' + result + ')';
+      }
+      if (node.computed) {
+        result += '->get(' + this.encodeProp(node) + ')';
+      } else if (~node.property.name.indexOf('$')) {
+        result += '->{\'' + node.property.name + '\'}';
+      } else {
+        result += '->' + node.property.name;
+      }
+      return result;
     },
 
     NewExpression: function (node) {
@@ -636,6 +650,24 @@
           ', ' +
           this.generate(node.right) +
           ')'
+        );
+      }
+      if (op === '===') {
+        return (
+            's_eq(' +
+            this.generate(node.left) +
+            ', ' +
+            this.generate(node.right) +
+            ')'
+        );
+      }
+      if (op === '!==') {
+        return (
+            '!s_eq(' +
+            this.generate(node.left) +
+            ', ' +
+            this.generate(node.right) +
+            ')'
         );
       }
       if (op === '!=') {
@@ -864,7 +896,7 @@
 
         //EXPRESSIONS
         case 'Literal':
-          result = encodeLiteral(node.value, node);
+          result = encodeLiteral(node.value, node, true);
           break;
         case 'Identifier':
           result = encodeVar(node);
@@ -967,7 +999,7 @@
     }
   }
 
-  function encodeLiteral(value, node) {
+  function encodeLiteral(value, node, wrapStringsInObject) {
     var type = value === null ? 'null' : typeof value;
     if (type === 'undefined') {
       return 'null';
@@ -976,18 +1008,11 @@
       return 'Obj::$null';
     }
     if (type === 'string') {
-      /*
-      if (node && node.raw) {
-        var result = node.raw;
-        if (result.match(/^'.*'/)) {
-          result = result.replace(/"/g, '\\"')
-              .replace(/\\'/g, '\'')
-              .replace(/^'(.*)'/, '"$1"');
-        }
-        result = result.replace(/\\b/g, '\\x08');
-        return result;
-      }*/
-      return encodeString(value);
+      if (wrapStringsInObject) {
+        return 'new Str(' + encodeString(value) + ')';
+      } else {
+        return encodeString(value);
+      }
     }
     if (type === 'boolean') {
       return value.toString();

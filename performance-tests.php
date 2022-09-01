@@ -8,12 +8,12 @@ $processDuration = 0;
 foreach ($tests as $test) {
     $path = "./test/compiled/$test.php";
     $startTimeInMs = microtime(true);
-    $numOfLoops = 1000;
+    $numOfLoops = 10;
     for ($j = 0; $j < $numOfLoops; $j++) {
         require($path);
     }
     $endTimeInMms = microtime(true);
-    $duration = ($endTimeInMms - $startTimeInMs) * 1000;
+    $duration = ($endTimeInMms - $startTimeInMs) * 10;
     echo "$test, total: $duration ms, each run: " . ($duration / $numOfLoops) . " ms\n";
     $processDuration += $duration;
 }

@@ -10,6 +10,9 @@ $process->set('exit', new Func(function($code = 0) {
 }));
 
 $process->set('binding', new Func(function($name) {
+  if ($name instanceof Str) {
+    $name = $name->value;
+  }
   $module = Module::get($name);
   if ($module === null) {
     throw new Ex(Err::create("Binding `$name` not found."));
@@ -18,7 +21,7 @@ $process->set('binding', new Func(function($name) {
 }));
 
 $process->set('cwd', new Func(function() {
-  return getcwd();
+  return new Str(getcwd());
 }));
 
 $env = new Obj();
@@ -27,10 +30,11 @@ $process->set('env', $env);
 unset($env);
 
 //command line arguments
-$process->argv = isset(GlobalObject::$OLD_GLOBALS['argv']) ? GlobalObject::$OLD_GLOBALS['argv'] : array();
+$argv = isset(GlobalObject::$OLD_GLOBALS['argv']) ? GlobalObject::$OLD_GLOBALS['argv'] : array();
 //first argument is path to script
-array_unshift($process->argv, 'php');
-$process->set('argv', Arr::fromArray($process->argv));
+array_unshift($argv, 'php');
+$process->set('argv', Arr::fromArray($argv));
+unset($argv);
 
 $process->set('stdout', new Obj('write', new Func(function($data) {
   echo $data;

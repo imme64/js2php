@@ -21,7 +21,7 @@
   var logTo = argv.quiet ? 'none' : 'stdout';
 
   if (argv.test) {
-    require('./test/transforms').run();
+    //require('./test/transforms').run();
     compileTests();
     runTests();
   } else {
